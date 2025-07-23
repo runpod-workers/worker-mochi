@@ -1,12 +1,12 @@
-# worker-mochi
+# Mochi Worker for RunPod
 
-> Generate videos with Mochi as an endpoint on RunPod
+This worker provides a RunPod serverless endpoint for Mochi, a text-to-video model from Kijai.
 
 ## Features
 
-- Video generation using [Mochi 1](https://github.com/genmoai/mochi) by [Genmo](https://genmo.ai)
-- Automatic model loading and initialization
-- [UploadThing](https://uploadthing.com/) integration for video upload
+- Generate videos from text prompts using Mochi
+- Customize video dimensions, number of frames, and other parameters
+- Optimized for performance on RunPod infrastructure
 
 ## API Reference
 
@@ -36,39 +36,47 @@
 }
 ```
 
-#### Core Parameters
+### Output
 
-| Parameter         | Description                                                            | Default |
-| ----------------- | ---------------------------------------------------------------------- | ------- |
-| `positive_prompt` | Text description of what you want to generate                          | `""`    |
-| `negative_prompt` | Text description of what you want to avoid in the generation           | `""`    |
-| `width`           | Output video width in pixels                                           | `848`   |
-| `height`          | Output video height in pixels                                          | `480`   |
-| `seed`            | Random seed for reproducible results                                   | `1337`  |
-| `steps`           | Number of denoising steps (higher = better quality, slower generation) | `40`    |
-| `cfg`             | Classifier-free guidance scale (how closely to follow the prompt)      | `6`     |
-| `num_frames`      | Number of frames to generate                                           | `31`    |
+The worker returns a URL to the generated video.
 
-#### VAE Parameters
+## Local Development
 
-| Parameter                    | Description                                | Default |
-| ---------------------------- | ------------------------------------------ | ------- |
-| `enable_vae_tiling`          | Enable tiling for VAE decoding             | `false` |
-| `tile_sample_min_width`      | Minimum tile width when tiling is enabled  | `312`   |
-| `tile_sample_min_height`     | Minimum tile height when tiling is enabled | `160`   |
-| `tile_overlap_factor_width`  | Overlap factor between tiles (width)       | `0.25`  |
-| `tile_overlap_factor_height` | Overlap factor between tiles (height)      | `0.25`  |
-| `auto_tile_size`             | Automatically determine tile size          | `false` |
-| `frame_batch_size`           | Number of frames to process in parallel    | `8`     |
+### Prerequisites
+
+- Docker
+- NVIDIA GPU with CUDA support
+- Git LFS
+
+### Setup
+
+1. Clone this repository
+2. Copy `.env.example` to `.env` and configure as needed
+3. Run `docker-compose up --build`
 
 ## Deployment
 
-Deploy this worker on RunPod using the [GitHub Integration](https://docs.runpod.io/serverless/github-integration).
+### RunPod
 
-## Development
+1. Create a new serverless template on RunPod
+2. Use the Docker image `runpod/worker-mochi:latest`
+3. Configure the template with appropriate GPU resources
+4. Deploy the endpoint
 
-For development and contribution guidelines, please see our [Contributing Guide](.github/CONTRIBUTING.md).
+## Models
+
+This worker uses the following models:
+
+- Mochi Preview DIT (BF16)
+- Mochi Preview VAE Decoder (BF16)
+- Google T5-v1.1-XXL Encoder Only (FP16)
 
 ## License
 
-[MIT License](LICENSE)
+See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- [Kijai](https://github.com/kijai) for creating Mochi
+- [ComfyUI](https://github.com/comfyanonymous/ComfyUI) for the backend framework
+- [RunPod](https://runpod.io) for the serverless infrastructure
